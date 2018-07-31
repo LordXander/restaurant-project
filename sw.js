@@ -1,13 +1,9 @@
-var cacheVersion = "version1";
-var cacheURLs = [
+var cacheName = "v1";
+var cacheFiles = [
 
-	'/index.html',
-	'/restaurant.html',
+	'/',
 	'/css/styles.css',
 	'/data/restaurants.json',
-	'/js/dbhelper.js',
-	'/js/main.js',
-	'/js/restaurant_info.js',
 	'/img/1.jpg',
 	'/img/2.jpg',
 	'/img/3.jpg',
@@ -18,9 +14,12 @@ var cacheURLs = [
 	'/img/8.jpg',
 	'/img/9.jpg',
 	'/img/10.jpg',
-	'/'
-
-];
+	'/js/dbhelper.js',
+	'/js/main.js',
+	'/js/restaurant_info.js',
+	'/index.html',
+	'/restaurant.html'
+]
 
 /**
  * @description Step 2: Add three event listeners for the different states of
@@ -31,7 +30,7 @@ var cacheURLs = [
  * installation fails. The square brackets around the [Service Worker] show
  * that the messages come directly from the service worker. */
 self.addEventListener('install', function(event) {
-	console.log("Service Worker was installed");
+	console.log("[Service Worker] Installed");
 
 	/**
 	 * @description The install has to wait until the promise within waitUntil()
@@ -42,9 +41,9 @@ self.addEventListener('install', function(event) {
 		 * @description Step 4: The browser opens the caches corresponding to the
 		 * cacheName and adds all the files of the array "cacheFiles".
 		 */
-		caches.open(cacheVersion).then(function(cache) {
-			console.log("Cashing the files from the URLs provided");
-			return cache.addAll(cacheURLs);
+		caches.open(cacheName).then(function(cache) {
+			console.log("[Service Worker] Caching cacheFiles");
+			return cache.addAll(cacheFiles);
 		})
 	)
 })
@@ -53,22 +52,22 @@ self.addEventListener('install', function(event) {
  * @description Activate the service worker and listen for the activation.
  */
 self.addEventListener('activate', function(event) {
-	console.log("Service Worker is now active");
+	console.log("[Service Worker] Activated");
 
 	event.waitUntil(
 		/**
 		 * @description Loop through all the keys of the caches to compare them
 		 * later.
 		 */
-		caches.keys().then(function(cacheURLs) {
-			return Promise.all(cacheNames.map(function(thisCachedURL) {
+		caches.keys().then(function(cacheNames) {
+			return Promise.all(cacheNames.map(function(thisCacheName) {
 				/**
 				 * @description Compare the cache names. If they are not equal, delete
 				 * the old caches to update the cache with the new caches.
 				 */
-				if (thisCachedURL !== cacheVersion) {
-					console.log("Removing the Cache files from the URLs - ", thisCachedURL);
-					return caches.delete(thisCachedURL);
+				if (thisCacheName !== cacheName) {
+					console.log("[Service Worker] Removing Cached Files from", thisCacheName);
+					return caches.delete(thisCacheName);
 				}
 			}))
 		})
@@ -79,22 +78,22 @@ self.addEventListener('activate', function(event) {
  * @description Fetch the data from the given URL.
  */
 self.addEventListener('fetch', function(event) {
-	console.log("Fething", event.request.url);
+	console.log("[Service Worker] Fetching", event.request.url);
 	/**
 	 * @description Check in the cache if the cached URL/file and the requested
 	 * URL/file match. Then respond appropriately to the outcome.
 	 */
 	event.respondWith(
 		caches.match(event.request)
-			.then(function(output) {
+			.then(function(response) {
 				/**
 				 * @description If the requested URL/file is found in the cache, log out
 				 * a message and return the cached version.
 				 * There is no need to fetch it again!
 				 */
-				 if (output) {
-					console.log("Cache files matched", event.request.url);
-					return output;
+				 if (response) {
+					console.log("[ServiceWorker] Found in cache", event.request.url);
+					return response;
 				}
 				/**
 				 * @description If the requested URL/file is not in the cache yet, go
@@ -103,7 +102,7 @@ self.addEventListener('fetch', function(event) {
 				return fetch(event.request);
 			})
 			.catch(function(error) {
-				console.log("Oops, a Fatal error has occured - ", error);
+				console.log("Error fetching and caching new data", error);
 			})
 	)
 })
