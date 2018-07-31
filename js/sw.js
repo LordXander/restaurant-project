@@ -1,5 +1,5 @@
 var cacheVersion = "v1";
-var cacheFiles = [
+var cacheURLs = [
 
 	'/',
 	'/css/styles.css',
@@ -43,7 +43,7 @@ self.addEventListener('install', function(event) {
 		 */
 		caches.open(cacheVersion).then(function(cache) {
 			console.log("[Service Worker] Caching cacheFiles");
-			return cache.addAll(cacheFiles);
+			return cache.addAll(cacheURLs);
 		})
 	)
 });
