@@ -1,4 +1,4 @@
-var cacheName = "v1";
+var cacheVersion = "v1";
 var cacheFiles = [
 
 	'/',
@@ -41,9 +41,9 @@ self.addEventListener('install', function(event) {
 		 * @description Step 4: The browser opens the caches corresponding to the
 		 * cacheName and adds all the files of the array "cacheFiles".
 		 */
-		caches.open(cacheName).then(function(cache) {
+		caches.open(cacheVersion).then(function(cache) {
 			console.log("[Service Worker] Caching cacheFiles");
-			return cache.addAll(cacheFiles);c
+			return cache.addAll(cacheFiles);
 		})
 	)
 })
@@ -59,15 +59,15 @@ self.addEventListener('activate', function(event) {
 		 * @description Loop through all the keys of the caches to compare them
 		 * later.
 		 */
-		caches.keys().then(function(cacheNames) {
-			return Promise.all(cacheNames.map(function(thisCacheName) {
+		caches.keys().then(function(cacheVersions) {
+			return Promise.all(cacheVersions.map(function(thisCacheVersion) {
 				/**
 				 * @description Compare the cache names. If they are not equal, delete
 				 * the old caches to update the cache with the new caches.
 				 */
-				if (thisCacheName !== cacheName) {
-					console.log("[Service Worker] Removing Cached Files from", thisCacheName);
-					return caches.delete(thisCacheName);
+				if (thisCacheVersion !== cacheVersion) {
+					console.log("[Service Worker] Removing Cached Files from", thisCacheVersion);
+					return caches.delete(thisCacheVersion);
 				}
 			}))
 		})
