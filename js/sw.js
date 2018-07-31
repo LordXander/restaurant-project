@@ -19,7 +19,7 @@ var cacheFiles = [
 	'/js/restaurant_info.js',
 	'/index.html',
 	'/restaurant.html'
-]
+];
 
 /**
  * @description Step 2: Add three event listeners for the different states of
@@ -46,7 +46,7 @@ self.addEventListener('install', function(event) {
 			return cache.addAll(cacheFiles);
 		})
 	)
-})
+});
 
 /**
  * @description Activate the service worker and listen for the activation.
@@ -72,7 +72,7 @@ self.addEventListener('activate', function(event) {
 			}))
 		})
 	)
-})
+});
 
 /**
  * @description Fetch the data from the given URL.
@@ -105,4 +105,4 @@ self.addEventListener('fetch', function(event) {
 				console.log("Error fetching and caching new data", error);
 			})
 	)
-})
+});
