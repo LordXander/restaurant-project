@@ -227,7 +227,7 @@ if ('serviceWorker' in navigator) {
 	 * @description Register the service worker and set the scope of it to the
 	 * whole directory in which the service worker is. */
 	navigator.serviceWorker
-		.register('./js/sw.js', { scope: './' })
+		.register('sw.js', { scope: '' })
 		// Check if the registration was successful
 		.then(function(registration) {
 			console.log("Service Worker registered", registration);
